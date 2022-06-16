@@ -15,7 +15,7 @@ const joiSchemaPut = Joi.object({
   name: Joi.string(),
   email: Joi.string(),
   phone: Joi.string(),
-});
+}).min(1);
 
 router.get('/', async (req, res, next) => {
   try {
@@ -28,8 +28,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:contactId', async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const contact = await contacts.getContactById(id);
+    const { contactId } = req.params;
+    const contact = await contacts.getContactById(contactId);
     if (!contact) {
       throw createError(404);
     }
@@ -54,8 +54,8 @@ router.post('/', async (req, res, next) => {
 
 router.delete('/:contactId', async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const result = await contacts.removeContact(id);
+    const { contactId } = req.params;
+    const result = await contacts.removeContact(contactId);
     if (!result) {
       throw createError(404);
     }
@@ -73,8 +73,8 @@ router.put('/:contactId', async (req, res, next) => {
     if (error) {
       throw createError(400, "missing fields");
     }
-    const { id } = req.params;
-    const result = await contacts.updateContact(id, req.body)
+    const { contactId } = req.params;
+    const result = await contacts.updateContact(contactId, req.body)
     if (!result) {
       throw createError(404);
     }

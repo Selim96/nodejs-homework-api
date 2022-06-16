@@ -35,7 +35,7 @@ router.get('/:contactId', async (req, res, next) => {
     }
     res.json(contact);
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 

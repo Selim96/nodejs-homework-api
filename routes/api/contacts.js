@@ -20,7 +20,6 @@ const joiSchemaPut = Joi.object({
 router.get('/', async (req, res, next) => {
   try {
     const result = await contacts.listContacts();
-    console.log(res)
     res.json(result);
   } catch (error) {
     next(error)

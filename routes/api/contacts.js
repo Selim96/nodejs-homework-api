@@ -1,87 +1,18 @@
 const express = require('express');
-const contacts = require('../../models');
-const { createError } = require('../../helpers');
-const Joi = require("joi");
+const { contacts: cntrlrs } = require('../../controllers');
+const { ctrlWrapper } = require("../../helpers");
 
 const router = express.Router();
 
-const joiSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required(),
-});
 
-const joiSchemaPut = Joi.object({
-  name: Joi.string(),
-  email: Joi.string(),
-  phone: Joi.string(),
-}).min(1);
+router.get('/', ctrlWrapper(cntrlrs.getAll));
 
-router.get('/', async (req, res, next) => {
-  try {
-    const result = await contacts.listContacts();
-    res.json(result);
-  } catch (error) {
-    next(error)
-  }
-});
+router.get('/:contactId', ctrlWrapper(cntrlrs.getById));
 
-router.get('/:contactId', async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const contact = await contacts.getContactById(contactId);
-    if (!contact) {
-      throw createError(404);
-    }
-    res.json(contact);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post('/', ctrlWrapper(cntrlrs.add));
 
-router.post('/', async (req, res, next) => {
-  try {
-    const { error } = joiSchema.validate(req.body);
-    if (error) {
-      throw createError(400, "missing required name field");
-    }
-    const result = await contacts.addContact(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    next(error);
-  }
-})
+router.delete('/:contactId', ctrlWrapper(cntrlrs.deleteById))
 
-router.delete('/:contactId', async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const result = await contacts.removeContact(contactId);
-    if (!result) {
-      throw createError(404);
-    }
-    res.json({
-      "message": "contact deleted"
-    });
-  } catch (error) {
-    next(error);
-  }
-})
-
-router.put('/:contactId', async (req, res, next) => {
-  try {
-    const { error } = joiSchemaPut.validate(req.body);
-    if (error) {
-      throw createError(400, "missing fields");
-    }
-    const { contactId } = req.params;
-    const result = await contacts.updateContact(contactId, req.body)
-    if (!result) {
-      throw createError(404);
-    }
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+router.put('/:contactId', ctrlWrapper(cntrlrs.updateById));
 
 module.exports = router

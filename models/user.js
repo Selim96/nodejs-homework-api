@@ -3,6 +3,8 @@ const Joi = require("joi");
 
 const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
+const subscriptions = ["starter", "pro", "business"];
+
 const userSchema = Schema({
     password: {
         type: String,
@@ -17,7 +19,7 @@ const userSchema = Schema({
     },
     subscription: {
         type: String,
-        enum: ["starter", "pro", "business"],
+        enum: [...subscriptions],
         default: "starter"
     },
     token: {
@@ -37,9 +39,14 @@ const loginSchema = Joi.object({
     password: Joi.string().required()
 });
 
+const subSchema = Joi.object({
+    subscription: Joi.string().valid(...subscriptions).required()
+});
+
 const schemasUser = {
     registerSchema,
-    loginSchema
+    loginSchema,
+    subSchema
 };
 
 const User = model("user", userSchema);

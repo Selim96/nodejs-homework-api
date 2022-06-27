@@ -14,4 +14,6 @@ router.get("/current", auth, ctrlWrapper(cntrl.getCurrent));
 
 router.get("/logout", auth, ctrlWrapper(cntrl.logout));
 
+router.patch("/", auth, validation(schemasUser.subSchema), ctrlWrapper(cntrl.changeSubscript));
+
 module.exports = router;

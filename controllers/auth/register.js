@@ -1,7 +1,8 @@
-const { createError } = require("../../helpers");
+const { createError, sendMail } = require("../../helpers");
 const { User } = require("../../models");
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
+const { v4 } = require("uuid");
 
 const register = async (req, res) => {
     const { email, password } = req.body;
@@ -11,11 +12,20 @@ const register = async (req, res) => {
     }
     const hashPassword = await bcrypt.hash(password, 10);
     const avatarURL = gravatar.url(email);
+
+    const verificationToken = v4();
     const result = await User.create({
         ...req.body,
         password: hashPassword,
-        avatarURL
+        avatarURL,
+        verificationToken
     });
+    const mail = {
+        to: email,
+        subject: "Confirm email",
+        html: `<a target="_blank href="http://localhost:3000/api/users/verify/${verificationToken}">Click to confirm registration</a>`
+    }
+    await sendMail(mail);
     res.status(201).json({
         user: {
             email: result.email,

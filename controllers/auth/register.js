@@ -3,6 +3,7 @@ const { User } = require("../../models");
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
 const { v4 } = require("uuid");
+const { SITE_URL } = process.env;
 
 const register = async (req, res) => {
     const { email, password } = req.body;
@@ -23,7 +24,7 @@ const register = async (req, res) => {
     const mail = {
         to: email,
         subject: "Confirm email",
-        html: `<a target="_blank href="http://localhost:3000/api/users/verify/${verificationToken}">Click to confirm registration</a>`
+        html: `<a target="_blank href="${SITE_URL}/api/users/verify/${verificationToken}">Click to confirm registration</a>`
     }
     await sendMail(mail);
     res.status(201).json({

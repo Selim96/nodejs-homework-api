@@ -55,10 +55,15 @@ const subSchema = Joi.object({
     subscription: Joi.string().valid(...subscriptions).required()
 });
 
+const verifyUser = Joi.object({
+    email: Joi.string().pattern(emailRegex).required()
+});
+
 const schemasUser = {
     registerSchema,
     loginSchema,
-    subSchema
+    subSchema,
+    verifyUser
 };
 
 const User = model("user", userSchema);

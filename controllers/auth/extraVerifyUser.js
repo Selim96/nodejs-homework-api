@@ -15,7 +15,7 @@ const extraVerifyUser = async (req, res) => {
     const mail = {
         to: email,
         subject: "Confirm email",
-        html: `<a target="_blank href="${SITE_URL}/api/users/verify/${verificationToken}">Click to confirm registration</a>`
+        html: `<a target="_blank" href="${SITE_URL}/api/users/verify/${verificationToken}">Click to confirm registration</a>`
     }
     await sendMail(mail);
     res.json({

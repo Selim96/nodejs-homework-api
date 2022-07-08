@@ -8,7 +8,7 @@ const updateAvatar = async (req, res) => {
     try {
         const { _id: id } = req.user;
         const { filename, path: filePath } = req.file;
-        
+        console.log(req.file)
         const [extension] = filename.split(".").reverse();
         const name = `${id}.${extension}`;
         const newDir = path.join(avatarsDir, name);
